@@ -1,6 +1,7 @@
 from policy import PasswordPolicy
 from entropy import EntropyCalculator
 from password_checker import PasswordChecker
+from password_generator import PasswordGenerator
 
 
 def test_valid_password():
@@ -136,3 +137,62 @@ def test_keyboard_pattern_is_very_weak():
     checker = PasswordChecker()
     result = checker.check_password("qwerty")
     assert result["strength"] == "Very Weak"
+
+
+def test_generated_password_has_correct_length():
+    generator = PasswordGenerator()
+    password = generator.generate(length=16)
+    assert len(password) == 16
+
+
+def test_generated_password_contains_required_character_types():
+    generator = PasswordGenerator()
+    password = generator.generate(
+        length=16,
+        include_uppercase=True,
+        include_lowercase=True,
+        include_digits=True,
+        include_special=True
+    )
+
+    assert any(char.isupper() for char in password)
+    assert any(char.islower() for char in password)
+    assert any(char.isdigit() for char in password)
+    assert any(char in "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" for char in password)
+
+
+def test_generated_password_can_be_checked():
+    generator = PasswordGenerator()
+    checker = PasswordChecker()
+
+    password = generator.generate(length=16)
+    result = checker.check_password(password)
+
+    assert result["entropy"] > 0
+    assert result["strength"] != ""
+
+
+def test_generator_rejects_invalid_length():
+    generator = PasswordGenerator()
+
+    try:
+        generator.generate(length=0)
+        assert False
+    except ValueError:
+        assert True
+
+
+def test_generator_requires_character_type():
+    generator = PasswordGenerator()
+
+    try:
+        generator.generate(
+            length=16,
+            include_uppercase=False,
+            include_lowercase=False,
+            include_digits=False,
+            include_special=False
+        )
+        assert False
+    except ValueError:
+        assert True

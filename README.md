@@ -4,7 +4,7 @@
 
 Password Strength Auditor & Policy Checker is a Python-based security application that evaluates password strength using password policy validation, entropy calculation, password strength classification, common password detection, common pattern detection, and keyboard pattern detection.
 
-The application checks password requirements such as minimum length, uppercase letters, lowercase letters, digits, and special characters. It also estimates password entropy and detects passwords that are commonly used or contain predictable patterns.
+Version 5 also introduces a secure password generator that can create random passwords using uppercase letters, lowercase letters, digits, and special characters.
 
 The project is developed using Object-Oriented Programming principles and includes automated testing using Pytest.
 
@@ -12,7 +12,7 @@ The project is developed using Object-Oriented Programming principles and includ
 
 ## Objective
 
-The objective of this project is to develop a modular password security auditing system using Python.
+The objective of this project is to develop a modular password security auditing and password generation system using Python.
 
 The system is designed to:
 
@@ -20,19 +20,24 @@ The system is designed to:
 - Calculate estimated password entropy.
 - Classify password strength.
 - Detect commonly used passwords.
-- Detect simple predictable password patterns.
+- Detect predictable password patterns.
 - Detect repeated characters.
 - Detect increasing character sequences.
 - Detect decreasing character sequences.
 - Detect keyboard patterns.
+- Generate secure random passwords.
+- Allow users to select password length.
+- Support different character types during password generation.
 - Identify missing password requirements.
-- Provide useful feedback to users.
+- Provide useful security feedback.
 - Demonstrate Object-Oriented Programming.
 - Implement automated testing using Pytest.
 
 ---
 
 ## Features
+
+### Password Auditing
 
 - Minimum password length validation
 - Uppercase letter validation
@@ -47,8 +52,25 @@ The system is designed to:
 - Decreasing character sequence detection
 - Keyboard pattern detection
 - Detailed password policy error messages
+
+### Password Generation
+
+- Secure random password generation
+- Custom password length
+- Uppercase letter support
+- Lowercase letter support
+- Digit support
+- Special character support
+- Input validation
+- Generated password auditing
+
+### Development
+
 - Object-Oriented Programming
+- Modular Python design
 - Automated unit testing using Pytest
+- Git version control
+- GitHub repository management
 
 ---
 
@@ -57,6 +79,8 @@ The system is designed to:
 - Python 3
 - Object-Oriented Programming
 - Pytest
+- secrets module
+- string module
 - Git
 - GitHub
 
@@ -69,6 +93,7 @@ Password_Strength_Auditor/
 ├── README.md
 ├── main.py
 ├── password_checker.py
+├── password_generator.py
 ├── policy.py
 ├── entropy.py
 ├── test_password.py
@@ -81,8 +106,9 @@ Password_Strength_Auditor/
 
 | File | Purpose |
 |---|---|
-| main.py | Runs the main application |
-| password_checker.py | Combines policy checking, entropy analysis, common password detection, pattern detection, and keyboard pattern detection |
+| main.py | Provides the application menu and connects auditing and password generation |
+| password_checker.py | Performs password policy checking, entropy analysis, common password detection, pattern detection, and keyboard pattern detection |
+| password_generator.py | Generates secure random passwords |
 | policy.py | Checks password policy requirements |
 | entropy.py | Calculates estimated password entropy |
 | test_password.py | Contains automated test cases |
@@ -94,7 +120,31 @@ Password_Strength_Auditor/
 
 ## How the System Works
 
+The application provides a menu-driven interface.
+
+The main menu contains:
+
+1. Audit Password
+2. Generate Password
+3. Exit
+
 The application follows this workflow:
+
+User
+  ↓
+Main Menu
+  ↓
+Choose Operation
+  ↓
+Audit Password OR Generate Password
+  ↓
+Display Result
+
+---
+
+## Password Auditing Workflow
+
+When the user chooses Audit Password:
 
 User enters password
         ↓
@@ -123,6 +173,26 @@ The system performs the following operations:
 7. Calculates estimated password entropy.
 8. Classifies the password strength.
 9. Displays the final password audit result.
+
+---
+
+## Password Generation Workflow
+
+When the user chooses Generate Password:
+
+User selects Generate Password
+        ↓
+Enter Password Length
+        ↓
+Generate Secure Random Characters
+        ↓
+Ensure Required Character Types
+        ↓
+Shuffle Characters
+        ↓
+Display Generated Password
+
+The generator uses Python's secrets module for security-oriented random generation.
 
 ---
 
@@ -204,9 +274,7 @@ The password is classified as Very Weak.
 
 ## Keyboard Pattern Detection
 
-Version 4 introduces keyboard pattern detection.
-
-The system checks for common keyboard sequences such as:
+The application checks for common keyboard sequences such as:
 
 - qwerty
 - asdfgh
@@ -228,31 +296,6 @@ Password contains a keyboard pattern
 The password is classified as Very Weak.
 
 The keyboard pattern check is case-insensitive.
-
-For example:
-
-QWERTY
-
-and
-
-qwerty
-
-are treated as the same keyboard pattern.
-
----
-
-## Pattern Detection Logic
-
-The pattern detector performs the following checks:
-
-1. If the password is shorter than four characters, no common pattern is reported.
-2. If all characters are identical, a repeated-character pattern is detected.
-3. The system checks whether every character increases sequentially.
-4. The system checks whether every character decreases sequentially.
-5. If either sequential condition is satisfied, a common pattern is detected.
-6. The system checks for predefined keyboard patterns.
-7. If a keyboard sequence is found, a keyboard pattern is detected.
-8. Otherwise, the password is treated as not containing a detected pattern.
 
 ---
 
@@ -293,6 +336,64 @@ These thresholds are used for this project's classification and are not a guaran
 
 ---
 
+## Password Generator
+
+Version 5 introduces the Password Generator.
+
+The generator is implemented using the Python secrets module.
+
+The generator can include:
+
+- Uppercase letters
+- Lowercase letters
+- Digits
+- Special characters
+
+The user can specify the desired password length.
+
+Example:
+
+Enter password length:
+
+16
+
+The generator then creates a random password such as:
+
+G7@kP2!xQ9#mL4$z
+
+The actual generated password will be different each time.
+
+---
+
+## Secure Random Generation
+
+The project uses Python's secrets module rather than the ordinary random module for password generation.
+
+The secrets module is designed for generating random values suitable for security-sensitive applications.
+
+The generator:
+
+1. Creates the selected character sets.
+2. Ensures at least one character from every selected character category.
+3. Fills the remaining password length with random characters.
+4. Shuffles the generated characters.
+5. Returns the final password.
+
+---
+
+## Password Generator Validation
+
+The generator validates the user's configuration.
+
+It raises an error when:
+
+- No character type is selected.
+- The requested password length is too short for the selected character types.
+
+For example, if four character categories are selected, the password must have enough length to include at least one character from each selected category.
+
+---
+
 ## Installation
 
 ### 1. Clone the Repository
@@ -325,23 +426,38 @@ Run the following command:
 
 python main.py
 
-The application will ask the user to enter a password.
+The application will display:
 
-Example:
-
-Password Strength Auditor & Policy Checker
--------------------------------------------
-Enter password:
-
-Enter a password to receive the audit result.
+=============================================
+ PASSWORD STRENGTH AUDITOR & POLICY CHECKER
+=============================================
+1. Audit Password
+2. Generate Password
+3. Exit
+=============================================
+Enter your choice:
 
 ---
 
-## Sample Input
+## Audit Password
+
+Select:
+
+1
+
+The application asks:
+
+Enter password:
+
+Enter a password such as:
 
 Hello@123
 
-## Sample Output
+The application displays the password audit result.
+
+---
+
+## Sample Audit Output
 
 =============================================
        PASSWORD STRENGTH AUDITOR
@@ -350,9 +466,50 @@ Policy Status : PASS
 Entropy       : 58.99 bits
 Strength      : Moderate
 Common Password: NO
+Keyboard Pattern: NO
 
 Policy Issues: None
 =============================================
+
+---
+
+## Generate Password
+
+Select:
+
+2
+
+The application asks:
+
+Enter password length:
+
+Enter:
+
+16
+
+The application generates a secure random password.
+
+Example:
+
+Generated Password:
+
+G7@kP2!xQ9#mL4$z
+
+The generated password will be different each time.
+
+---
+
+## Exit Application
+
+Select:
+
+3
+
+The application displays:
+
+Exiting application...
+
+and terminates.
 
 ---
 
@@ -371,6 +528,7 @@ Policy Status : FAIL
 Entropy       : 23.50 bits
 Strength      : Very Weak
 Common Password: NO
+Keyboard Pattern: NO
 
 Policy Issues:
 - Password must contain at least 8 characters
@@ -396,37 +554,13 @@ Policy Status : FAIL
 Entropy       : ...
 Strength      : Very Weak
 Common Password: YES
+Keyboard Pattern: NO
 
 Policy Issues:
 - Password must contain an uppercase letter
 - Password must contain a digit
 - Password must contain a special character
 - Password is a commonly used password
-=============================================
-
----
-
-## Example of a Common Pattern
-
-Input:
-
-abcdef
-
-Output:
-
-=============================================
-       PASSWORD STRENGTH AUDITOR
-=============================================
-Policy Status : FAIL
-Entropy       : ...
-Strength      : Very Weak
-Common Password: NO
-
-Policy Issues:
-- Password must contain an uppercase letter
-- Password must contain a digit
-- Password must contain a special character
-- Password contains a common pattern
 =============================================
 
 ---
@@ -446,6 +580,7 @@ Policy Status : FAIL
 Entropy       : ...
 Strength      : Very Weak
 Common Password: YES
+Keyboard Pattern: YES
 
 Policy Issues:
 - Password must contain an uppercase letter
@@ -453,8 +588,6 @@ Policy Issues:
 - Password must contain a special character
 - Password is a commonly used password
 =============================================
-
-Note: qwerty is already included in the common-password list, so the common-password detection takes priority in the displayed error list.
 
 ---
 
@@ -466,48 +599,74 @@ Run all tests using:
 
 pytest
 
-The current test suite contains 22 test cases.
+The current test suite contains 27 test cases.
 
 Expected result:
 
-22 passed
+27 passed
 
-The test suite checks:
+---
 
-- Valid passwords
-- Short passwords
-- Missing uppercase letters
-- Missing lowercase letters
-- Missing digits
-- Missing special characters
-- Empty password entropy
-- Entropy comparison
-- Password checker functionality
-- Weak password detection
-- Common password detection
-- Non-common password detection
-- Common password strength classification
-- Repeated character pattern detection
-- Increasing pattern detection
-- Decreasing pattern detection
-- Normal password pattern detection
-- QWERTY keyboard pattern detection
-- ASDFGH keyboard pattern detection
-- ZXCVBN keyboard pattern detection
-- Normal password without keyboard pattern
-- Keyboard pattern strength classification
+## Test Categories
+
+### Password Policy Tests
+
+- Valid Password
+- Short Password
+- Missing Uppercase
+- Missing Lowercase
+- Missing Digit
+- Missing Special Character
+
+### Entropy Tests
+
+- Empty Password
+- Entropy Comparison
+
+### Password Checker Tests
+
+- Valid Password
+- Weak Password
+- Common Password
+- Non-Common Password
+- Common Password Strength
+
+### Common Pattern Tests
+
+- Repeated Character Pattern
+- Increasing Character Pattern
+- Decreasing Character Pattern
+- Normal Password Without Pattern
+
+### Keyboard Pattern Tests
+
+- QWERTY Pattern
+- ASDFGH Pattern
+- ZXCVBN Pattern
+- Normal Password Without Keyboard Pattern
+- Keyboard Pattern Strength
+
+### Password Generator Tests
+
+- Generated Password Length
+- Required Character Types
+- Generated Password Can Be Audited
+- Invalid Generator Length
+- No Character Type Selected
 
 ---
 
 ## Algorithm
 
+### Password Auditing Algorithm
+
 Step 1: Accept Password
 
-The user enters a password through the application.
+The user enters a password.
 
 Step 2: Check Common Password
 
-The password is compared against the application's common-password list.
+The password is compared against the application's common-password set.
 
 Step 3: Check Common Pattern
 
@@ -537,25 +696,47 @@ The system identifies the character categories present in the password.
 
 Step 7: Calculate Entropy
 
-The estimated entropy is calculated using:
-
-Entropy = Password Length × log₂(Character Pool)
+The estimated entropy is calculated.
 
 Step 8: Determine Strength
 
 The entropy value is compared with the predefined strength thresholds.
 
-If the password is detected as a common password, contains a common pattern, or contains a keyboard pattern, its strength is classified as Very Weak.
-
 Step 9: Generate Result
 
-The application displays:
+The application displays the final password audit.
 
-- Policy status
-- Entropy
-- Password strength
-- Common password status
-- Policy issues
+---
+
+## Password Generation Algorithm
+
+Step 1: Select Character Types
+
+The generator determines which character types are enabled.
+
+Step 2: Validate Settings
+
+The generator checks that at least one character type is selected.
+
+Step 3: Validate Length
+
+The generator checks that the requested length is sufficient for the selected character types.
+
+Step 4: Select Required Characters
+
+At least one character is selected from each enabled character set.
+
+Step 5: Fill Remaining Characters
+
+Additional characters are selected from the combined character pool.
+
+Step 6: Shuffle
+
+The characters are securely shuffled.
+
+Step 7: Return Password
+
+The final generated password is returned to the user.
 
 ---
 
@@ -590,6 +771,15 @@ The PasswordChecker class combines:
 - Keyboard pattern detection
 - Password strength classification
 
+### PasswordGenerator
+
+The PasswordGenerator class is responsible for:
+
+- Generating random passwords
+- Handling character-type selections
+- Validating generator settings
+- Creating passwords using the secrets module
+
 This modular design improves:
 
 - Code organization
@@ -601,49 +791,53 @@ This modular design improves:
 
 ## Time Complexity
 
-Let n represent the length of the password.
+Let n represent the password length.
 
 ### Policy Checking
-
-The password is scanned to check the required character categories.
 
 O(n)
 
 ### Entropy Calculation
 
-The password is scanned to determine its character categories.
-
 O(n)
 
 ### Common Password Detection
 
-The password is checked against a set of common passwords.
-
-Average-case lookup:
+Average-case:
 
 O(1)
 
 ### Common Pattern Detection
 
-The password is scanned to identify repeated or sequential characters.
-
 O(n)
 
 ### Keyboard Pattern Detection
 
-The password is checked against a fixed set of keyboard patterns.
+For the fixed pattern list used in this project:
 
-For the fixed pattern list used in this project, this is effectively O(n).
+O(n)
 
-### Overall Time Complexity
+### Password Generation
+
+The generator creates a password of length n.
+
+O(n)
+
+### Overall Auditing Complexity
+
+O(n)
+
+### Overall Generation Complexity
 
 O(n)
 
 ### Space Complexity
 
-For the fixed project configuration:
+For the fixed project configuration, the additional working space is approximately:
 
-O(1)
+O(n)
+
+because the generated password is stored in memory.
 
 ---
 
@@ -688,9 +882,17 @@ The automated tests cover the major components of the application.
 - Normal Password Without Keyboard Pattern
 - Keyboard Pattern Strength
 
+### Password Generator
+
+- Correct Password Length
+- Required Character Types
+- Generated Password Auditing
+- Invalid Length Handling
+- Character Type Validation
+
 Current test result:
 
-22 tests passed
+27 tests passed
 
 ---
 
@@ -735,9 +937,25 @@ Added:
 - Keyboard pattern strength classification
 - Additional automated tests
 
+### Version 5
+
+Added:
+
+- Secure password generation
+- Python secrets module
+- Custom password length
+- Uppercase character support
+- Lowercase character support
+- Digit support
+- Special character support
+- Generator validation
+- Generated password auditing
+- Menu-driven application
+- Additional automated tests
+
 Current test count:
 
-22 tests
+27 tests
 
 ---
 
@@ -751,15 +969,15 @@ Possible future improvements include:
 - Detection of numeric sequences
 - Detection of repeated blocks
 - Detection of dates and years
-- Secure password generation
+- Configurable password policies
+- Password history analysis
 - Graphical User Interface
 - Web-based interface
-- Configurable password policies
 - Detailed security reports
-- Privacy-preserving password breach checking
-- Password history analysis
+- Password audit report export
 - Real-time password strength feedback
-- Exporting password audit reports
+- Privacy-preserving password breach checking
+- More customizable password generator options
 
 ---
 
@@ -777,6 +995,8 @@ This project demonstrates the following concepts:
 - Common password detection
 - Pattern detection
 - Keyboard pattern detection
+- Secure random generation
+- Python secrets module
 - Unit testing
 - Pytest
 - Algorithm design
@@ -799,10 +1019,11 @@ This project can be used as an educational example for understanding:
 - Common password detection
 - Password pattern analysis
 - Keyboard pattern analysis
+- Secure password generation
 - Python OOP
 - Software testing
 
-It can also serve as a foundation for developing more advanced password auditing tools.
+It can also serve as a foundation for developing more advanced password security applications.
 
 ---
 
