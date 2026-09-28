@@ -8,6 +8,9 @@ class PasswordPolicy:
         require_digit=True,
         require_special=True
     ):
+        if min_length < 1:
+            raise ValueError("Minimum length must be at least 1")
+
         self.min_length = min_length
         self.require_uppercase = require_uppercase
         self.require_lowercase = require_lowercase
@@ -42,6 +45,3 @@ class PasswordPolicy:
 
     def is_valid(self, password):
         return len(self.check(password)) == 0
-
-
-

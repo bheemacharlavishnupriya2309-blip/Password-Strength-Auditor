@@ -4,7 +4,9 @@
 
 Password Strength Auditor & Policy Checker is a Python-based security application that evaluates password strength using password policy validation, entropy calculation, password strength classification, common password detection, common pattern detection, and keyboard pattern detection.
 
-Version 5 also introduces a secure password generator that can create random passwords using uppercase letters, lowercase letters, digits, and special characters.
+The project also includes a secure password generator and configurable password policies.
+
+Version 6 allows users or developers to customize password policy requirements such as minimum password length, uppercase letters, lowercase letters, digits, and special characters.
 
 The project is developed using Object-Oriented Programming principles and includes automated testing using Pytest.
 
@@ -26,9 +28,10 @@ The system is designed to:
 - Detect decreasing character sequences.
 - Detect keyboard patterns.
 - Generate secure random passwords.
-- Allow users to select password length.
-- Support different character types during password generation.
-- Identify missing password requirements.
+- Allow configurable password policies.
+- Allow custom minimum password lengths.
+- Enable or disable individual password requirements.
+- Identify password policy issues.
 - Provide useful security feedback.
 - Demonstrate Object-Oriented Programming.
 - Implement automated testing using Pytest.
@@ -64,6 +67,15 @@ The system is designed to:
 - Input validation
 - Generated password auditing
 
+### Configurable Password Policies
+
+- Custom minimum password length
+- Optional uppercase requirement
+- Optional lowercase requirement
+- Optional digit requirement
+- Optional special-character requirement
+- Validation of invalid policy configurations
+
 ### Development
 
 - Object-Oriented Programming
@@ -81,6 +93,7 @@ The system is designed to:
 - Pytest
 - secrets module
 - string module
+- math module
 - Git
 - GitHub
 
@@ -109,7 +122,7 @@ Password_Strength_Auditor/
 | main.py | Provides the application menu and connects auditing and password generation |
 | password_checker.py | Performs password policy checking, entropy analysis, common password detection, pattern detection, and keyboard pattern detection |
 | password_generator.py | Generates secure random passwords |
-| policy.py | Checks password policy requirements |
+| policy.py | Provides configurable password policy validation |
 | entropy.py | Calculates estimated password entropy |
 | test_password.py | Contains automated test cases |
 | requirements.txt | Contains project dependencies |
@@ -148,13 +161,13 @@ When the user chooses Audit Password:
 
 User enters password
         ↓
+Password Policy Check
+        ↓
 Common Password Check
         ↓
 Common Pattern Check
         ↓
 Keyboard Pattern Check
-        ↓
-Password Policy Check
         ↓
 Entropy Calculation
         ↓
@@ -165,50 +178,110 @@ Final Password Audit
 The system performs the following operations:
 
 1. Accepts a password from the user.
-2. Checks whether the password is commonly used.
-3. Checks whether the password contains a predictable pattern.
-4. Checks whether the password contains a keyboard pattern.
-5. Validates the password against the configured security policy.
-6. Identifies the character types present in the password.
-7. Calculates estimated password entropy.
-8. Classifies the password strength.
-9. Displays the final password audit result.
-
----
-
-## Password Generation Workflow
-
-When the user chooses Generate Password:
-
-User selects Generate Password
-        ↓
-Enter Password Length
-        ↓
-Generate Secure Random Characters
-        ↓
-Ensure Required Character Types
-        ↓
-Shuffle Characters
-        ↓
-Display Generated Password
-
-The generator uses Python's secrets module for security-oriented random generation.
+2. Validates the password against the configured policy.
+3. Checks whether the password is commonly used.
+4. Checks whether the password contains a predictable pattern.
+5. Checks whether the password contains a keyboard pattern.
+6. Calculates estimated password entropy.
+7. Classifies the password strength.
+8. Displays the final password audit result.
 
 ---
 
 ## Password Policy
 
-The default password policy checks the following requirements:
+The default password policy uses the following settings:
 
-| Requirement | Description |
+| Setting | Default Value |
 |---|---|
-| Minimum Length | At least 8 characters |
-| Uppercase | At least one uppercase letter |
-| Lowercase | At least one lowercase letter |
-| Digit | At least one number |
-| Special Character | At least one special character |
+| Minimum Length | 8 |
+| Require Uppercase | True |
+| Require Lowercase | True |
+| Require Digit | True |
+| Require Special Character | True |
 
-A password must satisfy all required rules to pass the default policy.
+A password must satisfy all enabled requirements to pass the configured policy.
+
+---
+
+## Configurable Password Policy
+
+Version 6 introduces configurable password policies.
+
+The PasswordPolicy class allows the following settings to be changed:
+
+- Minimum password length
+- Uppercase requirement
+- Lowercase requirement
+- Digit requirement
+- Special-character requirement
+
+Example:
+
+PasswordPolicy(
+    min_length=12,
+    require_uppercase=True,
+    require_lowercase=True,
+    require_digit=True,
+    require_special=True
+)
+
+This configuration requires a password to contain at least 12 characters and all four character categories.
+
+---
+
+## Custom Minimum Length
+
+The minimum password length can be customized.
+
+Example:
+
+PasswordPolicy(min_length=12)
+
+A password shorter than 12 characters will fail the policy.
+
+The system generates an error message such as:
+
+Password must contain at least 12 characters
+
+---
+
+## Optional Password Requirements
+
+Individual requirements can be disabled when needed.
+
+Example:
+
+PasswordPolicy(
+    min_length=8,
+    require_uppercase=False,
+    require_lowercase=True,
+    require_digit=False,
+    require_special=False
+)
+
+This policy requires:
+
+- At least 8 characters
+- At least one lowercase letter
+
+Uppercase letters, digits, and special characters are optional in this configuration.
+
+---
+
+## Policy Validation
+
+The system validates the policy configuration before using it.
+
+The minimum password length must be at least 1.
+
+For example:
+
+PasswordPolicy(min_length=0)
+
+raises a ValueError.
+
+This prevents invalid policy configurations.
 
 ---
 
@@ -338,9 +411,7 @@ These thresholds are used for this project's classification and are not a guaran
 
 ## Password Generator
 
-Version 5 introduces the Password Generator.
-
-The generator is implemented using the Python secrets module.
+The PasswordGenerator class provides secure random password generation.
 
 The generator can include:
 
@@ -357,7 +428,7 @@ Enter password length:
 
 16
 
-The generator then creates a random password such as:
+The generator creates a random password such as:
 
 G7@kP2!xQ9#mL4$z
 
@@ -591,6 +662,26 @@ Policy Issues:
 
 ---
 
+## Example of a Custom Policy
+
+Example configuration:
+
+PasswordPolicy(
+    min_length=12,
+    require_uppercase=True,
+    require_lowercase=True,
+    require_digit=False,
+    require_special=False
+)
+
+Example password:
+
+HelloWorld12
+
+The policy can be customized according to the application's requirements.
+
+---
+
 ## Testing
 
 The project uses Pytest for automated testing.
@@ -599,11 +690,11 @@ Run all tests using:
 
 pytest
 
-The current test suite contains 27 test cases.
+The current test suite contains 33 test cases.
 
 Expected result:
 
-27 passed
+33 passed
 
 ---
 
@@ -648,11 +739,20 @@ Expected result:
 
 ### Password Generator Tests
 
-- Generated Password Length
+- Correct Password Length
 - Required Character Types
-- Generated Password Can Be Audited
-- Invalid Generator Length
-- No Character Type Selected
+- Generated Password Auditing
+- Invalid Length Handling
+- Character Type Validation
+
+### Configurable Policy Tests
+
+- Custom Minimum Length
+- Disable Uppercase Requirement
+- Disable Digit Requirement
+- Disable Special Character Requirement
+- Custom Basic Policy
+- Invalid Minimum Length
 
 ---
 
@@ -664,11 +764,15 @@ Step 1: Accept Password
 
 The user enters a password.
 
-Step 2: Check Common Password
+Step 2: Apply Configured Policy
+
+The password is checked against the currently configured policy.
+
+Step 3: Check Common Password
 
 The password is compared against the application's common-password set.
 
-Step 3: Check Common Pattern
+Step 4: Check Common Pattern
 
 The system checks for:
 
@@ -676,35 +780,51 @@ The system checks for:
 - Increasing character sequences
 - Decreasing character sequences
 
-Step 4: Check Keyboard Pattern
+Step 5: Check Keyboard Pattern
 
 The system checks whether the password contains a predefined keyboard sequence.
 
-Step 5: Validate Password Policy
+Step 6: Calculate Entropy
 
-The system checks:
+The estimated entropy is calculated using the password length and character pool.
 
-- Minimum password length
-- Uppercase letter
-- Lowercase letter
-- Digit
-- Special character
-
-Step 6: Determine Character Pool
-
-The system identifies the character categories present in the password.
-
-Step 7: Calculate Entropy
-
-The estimated entropy is calculated.
-
-Step 8: Determine Strength
+Step 7: Determine Strength
 
 The entropy value is compared with the predefined strength thresholds.
 
-Step 9: Generate Result
+Step 8: Generate Result
 
 The application displays the final password audit.
+
+---
+
+## Configurable Policy Algorithm
+
+Step 1: Create Password Policy
+
+A PasswordPolicy object is created.
+
+Step 2: Configure Settings
+
+The user or application can specify:
+
+- Minimum length
+- Uppercase requirement
+- Lowercase requirement
+- Digit requirement
+- Special-character requirement
+
+Step 3: Validate Configuration
+
+The system verifies that the minimum length is valid.
+
+Step 4: Check Password
+
+Only the enabled requirements are checked.
+
+Step 5: Return Result
+
+The system returns a list of policy errors.
 
 ---
 
@@ -720,7 +840,7 @@ The generator checks that at least one character type is selected.
 
 Step 3: Validate Length
 
-The generator checks that the requested length is sufficient for the selected character types.
+The generator checks that the requested length is sufficient.
 
 Step 4: Select Required Characters
 
@@ -736,7 +856,7 @@ The characters are securely shuffled.
 
 Step 7: Return Password
 
-The final generated password is returned to the user.
+The final generated password is returned.
 
 ---
 
@@ -746,19 +866,18 @@ The project uses Object-Oriented Programming to separate different responsibilit
 
 ### PasswordPolicy
 
-The PasswordPolicy class is responsible for validating password requirements.
+The PasswordPolicy class is responsible for:
 
-It checks:
-
-- Password length
-- Uppercase letters
-- Lowercase letters
-- Digits
-- Special characters
+- Minimum length validation
+- Uppercase validation
+- Lowercase validation
+- Digit validation
+- Special-character validation
+- Configurable policy settings
 
 ### EntropyCalculator
 
-The EntropyCalculator class calculates the estimated entropy of a password.
+The EntropyCalculator class calculates estimated password entropy.
 
 ### PasswordChecker
 
@@ -833,11 +952,11 @@ O(n)
 
 ### Space Complexity
 
-For the fixed project configuration, the additional working space is approximately:
+For the fixed project configuration, additional working space is approximately:
 
 O(n)
 
-because the generated password is stored in memory.
+because the generated password and intermediate character collections are stored in memory.
 
 ---
 
@@ -890,9 +1009,18 @@ The automated tests cover the major components of the application.
 - Invalid Length Handling
 - Character Type Validation
 
+### Configurable Policy
+
+- Custom Minimum Length
+- Optional Uppercase Requirement
+- Optional Digit Requirement
+- Optional Special Character Requirement
+- Custom Basic Policy
+- Invalid Minimum Length
+
 Current test result:
 
-27 tests passed
+33 tests passed
 
 ---
 
@@ -953,9 +1081,22 @@ Added:
 - Menu-driven application
 - Additional automated tests
 
+### Version 6
+
+Added:
+
+- Configurable password policies
+- Custom minimum password length
+- Optional uppercase requirement
+- Optional lowercase requirement
+- Optional digit requirement
+- Optional special-character requirement
+- Invalid policy configuration validation
+- Additional automated tests
+
 Current test count:
 
-27 tests
+33 tests
 
 ---
 
@@ -969,14 +1110,16 @@ Possible future improvements include:
 - Detection of numeric sequences
 - Detection of repeated blocks
 - Detection of dates and years
-- Configurable password policies
-- Password history analysis
+- User-configurable policies through the main menu
+- Saving custom policies
+- Policy profiles such as Basic, Standard, and Strong
 - Graphical User Interface
 - Web-based interface
 - Detailed security reports
 - Password audit report export
 - Real-time password strength feedback
 - Privacy-preserving password breach checking
+- Password history analysis
 - More customizable password generator options
 
 ---
@@ -990,6 +1133,7 @@ This project demonstrates the following concepts:
 - Classes and objects
 - Modular programming
 - Password policy validation
+- Configurable software design
 - Password entropy
 - Password strength classification
 - Common password detection
@@ -1015,6 +1159,7 @@ This project can be used as an educational example for understanding:
 - Password security
 - Secure authentication concepts
 - Password policy validation
+- Configurable security policies
 - Password entropy
 - Common password detection
 - Password pattern analysis
