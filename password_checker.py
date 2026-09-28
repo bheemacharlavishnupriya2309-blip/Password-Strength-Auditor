@@ -20,6 +20,15 @@ class PasswordChecker:
         "iloveyou"
     }
 
+    KEYBOARD_PATTERNS = {
+        "qwerty",
+        "asdfgh",
+        "zxcvbn",
+        "qwertyui",
+        "asdfghjk",
+        "zxcvbnm"
+    }
+
     def __init__(self):
         self.policy = PasswordPolicy()
         self.entropy_calculator = EntropyCalculator()
@@ -30,6 +39,7 @@ class PasswordChecker:
 
         is_common = self.is_common_password(password)
         has_pattern = self.has_common_pattern(password)
+        has_keyboard_pattern = self.has_keyboard_pattern(password)
 
         if is_common:
             errors.append("Password is a commonly used password")
@@ -37,9 +47,12 @@ class PasswordChecker:
         if has_pattern and not is_common:
             errors.append("Password contains a common pattern")
 
+        if has_keyboard_pattern and not is_common:
+            errors.append("Password contains a keyboard pattern")
+
         strength = self.get_strength(entropy)
 
-        if is_common or has_pattern:
+        if is_common or has_pattern or has_keyboard_pattern:
             strength = "Very Weak"
 
         return {
@@ -48,7 +61,8 @@ class PasswordChecker:
             "entropy": entropy,
             "strength": strength,
             "is_common": is_common,
-            "has_pattern": has_pattern
+            "has_pattern": has_pattern,
+            "has_keyboard_pattern": has_keyboard_pattern
         }
 
     def is_common_password(self, password):
@@ -75,6 +89,15 @@ class PasswordChecker:
 
         if increasing or decreasing:
             return True
+
+        return False
+
+    def has_keyboard_pattern(self, password):
+        password = password.lower()
+
+        for pattern in self.KEYBOARD_PATTERNS:
+            if pattern in password:
+                return True
 
         return False
 

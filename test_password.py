@@ -106,3 +106,33 @@ def test_normal_password_has_no_pattern():
     checker = PasswordChecker()
     result = checker.check_password("Xy7!mQ2@")
     assert result["has_pattern"] is False
+
+
+def test_qwerty_keyboard_pattern():
+    checker = PasswordChecker()
+    result = checker.check_password("qwerty")
+    assert result["has_keyboard_pattern"] is True
+
+
+def test_asdf_keyboard_pattern():
+    checker = PasswordChecker()
+    result = checker.check_password("asdfgh")
+    assert result["has_keyboard_pattern"] is True
+
+
+def test_zxcv_keyboard_pattern():
+    checker = PasswordChecker()
+    result = checker.check_password("zxcvbn")
+    assert result["has_keyboard_pattern"] is True
+
+
+def test_normal_password_has_no_keyboard_pattern():
+    checker = PasswordChecker()
+    result = checker.check_password("Xy7!mQ2@")
+    assert result["has_keyboard_pattern"] is False
+
+
+def test_keyboard_pattern_is_very_weak():
+    checker = PasswordChecker()
+    result = checker.check_password("qwerty")
+    assert result["strength"] == "Very Weak"

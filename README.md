@@ -2,9 +2,9 @@
 
 ## Project Description
 
-Password Strength Auditor & Policy Checker is a Python-based security application that evaluates password strength using password policy validation, entropy calculation, password strength classification, common password detection, and common pattern detection.
+Password Strength Auditor & Policy Checker is a Python-based security application that evaluates password strength using password policy validation, entropy calculation, password strength classification, common password detection, common pattern detection, and keyboard pattern detection.
 
-The application checks password requirements such as minimum length, uppercase letters, lowercase letters, digits, and special characters. It also estimates password entropy and detects passwords that are commonly used or contain simple predictable patterns.
+The application checks password requirements such as minimum length, uppercase letters, lowercase letters, digits, and special characters. It also estimates password entropy and detects passwords that are commonly used or contain predictable patterns.
 
 The project is developed using Object-Oriented Programming principles and includes automated testing using Pytest.
 
@@ -24,6 +24,7 @@ The system is designed to:
 - Detect repeated characters.
 - Detect increasing character sequences.
 - Detect decreasing character sequences.
+- Detect keyboard patterns.
 - Identify missing password requirements.
 - Provide useful feedback to users.
 - Demonstrate Object-Oriented Programming.
@@ -44,6 +45,7 @@ The system is designed to:
 - Repeated character pattern detection
 - Increasing character sequence detection
 - Decreasing character sequence detection
+- Keyboard pattern detection
 - Detailed password policy error messages
 - Object-Oriented Programming
 - Automated unit testing using Pytest
@@ -80,7 +82,7 @@ Password_Strength_Auditor/
 | File | Purpose |
 |---|---|
 | main.py | Runs the main application |
-| password_checker.py | Combines policy checking, entropy analysis, common password detection, and pattern detection |
+| password_checker.py | Combines policy checking, entropy analysis, common password detection, pattern detection, and keyboard pattern detection |
 | policy.py | Checks password policy requirements |
 | entropy.py | Calculates estimated password entropy |
 | test_password.py | Contains automated test cases |
@@ -100,6 +102,8 @@ Common Password Check
         ↓
 Common Pattern Check
         ↓
+Keyboard Pattern Check
+        ↓
 Password Policy Check
         ↓
 Entropy Calculation
@@ -113,11 +117,12 @@ The system performs the following operations:
 1. Accepts a password from the user.
 2. Checks whether the password is commonly used.
 3. Checks whether the password contains a predictable pattern.
-4. Validates the password against the configured security policy.
-5. Identifies the character types present in the password.
-6. Calculates estimated password entropy.
-7. Classifies the password strength.
-8. Displays the final password audit result.
+4. Checks whether the password contains a keyboard pattern.
+5. Validates the password against the configured security policy.
+6. Identifies the character types present in the password.
+7. Calculates estimated password entropy.
+8. Classifies the password strength.
+9. Displays the final password audit result.
 
 ---
 
@@ -163,9 +168,7 @@ The list is intended for educational demonstration and is not a complete databas
 
 ## Common Pattern Detection
 
-Version 3 introduces common password pattern detection.
-
-The system detects simple predictable patterns that can make passwords easier to guess.
+The application detects simple predictable character patterns.
 
 ### Repeated Characters
 
@@ -195,7 +198,46 @@ If a common pattern is detected, the system adds:
 
 Password contains a common pattern
 
-The password is also classified as Very Weak.
+The password is classified as Very Weak.
+
+---
+
+## Keyboard Pattern Detection
+
+Version 4 introduces keyboard pattern detection.
+
+The system checks for common keyboard sequences such as:
+
+- qwerty
+- asdfgh
+- zxcvbn
+- qwertyui
+- asdfghjk
+- zxcvbnm
+
+Examples:
+
+qwerty
+asdfgh
+zxcvbn
+
+If a keyboard pattern is detected, the system adds:
+
+Password contains a keyboard pattern
+
+The password is classified as Very Weak.
+
+The keyboard pattern check is case-insensitive.
+
+For example:
+
+QWERTY
+
+and
+
+qwerty
+
+are treated as the same keyboard pattern.
 
 ---
 
@@ -203,12 +245,14 @@ The password is also classified as Very Weak.
 
 The pattern detector performs the following checks:
 
-1. If the password is shorter than four characters, no pattern is reported.
+1. If the password is shorter than four characters, no common pattern is reported.
 2. If all characters are identical, a repeated-character pattern is detected.
 3. The system checks whether every character increases sequentially.
 4. The system checks whether every character decreases sequentially.
 5. If either sequential condition is satisfied, a common pattern is detected.
-6. Otherwise, the password is treated as not containing a detected common pattern.
+6. The system checks for predefined keyboard patterns.
+7. If a keyboard sequence is found, a keyboard pattern is detected.
+8. Otherwise, the password is treated as not containing a detected pattern.
 
 ---
 
@@ -243,7 +287,7 @@ The application classifies passwords based on estimated entropy.
 | 60–79 bits | Strong |
 | 80+ bits | Very Strong |
 
-A password detected as a common password or detected as containing a common pattern is classified as Very Weak by the application.
+A password detected as a common password, common pattern, or keyboard pattern is classified as Very Weak by the application.
 
 These thresholds are used for this project's classification and are not a guarantee of real-world password security.
 
@@ -387,11 +431,11 @@ Policy Issues:
 
 ---
 
-## Example of Repeated Characters
+## Example of a Keyboard Pattern
 
 Input:
 
-aaaaaa
+qwerty
 
 Output:
 
@@ -401,14 +445,16 @@ Output:
 Policy Status : FAIL
 Entropy       : ...
 Strength      : Very Weak
-Common Password: NO
+Common Password: YES
 
 Policy Issues:
 - Password must contain an uppercase letter
 - Password must contain a digit
 - Password must contain a special character
-- Password contains a common pattern
+- Password is a commonly used password
 =============================================
+
+Note: qwerty is already included in the common-password list, so the common-password detection takes priority in the displayed error list.
 
 ---
 
@@ -420,11 +466,11 @@ Run all tests using:
 
 pytest
 
-The current test suite contains 17 test cases.
+The current test suite contains 22 test cases.
 
 Expected result:
 
-17 passed
+22 passed
 
 The test suite checks:
 
@@ -445,6 +491,11 @@ The test suite checks:
 - Increasing pattern detection
 - Decreasing pattern detection
 - Normal password pattern detection
+- QWERTY keyboard pattern detection
+- ASDFGH keyboard pattern detection
+- ZXCVBN keyboard pattern detection
+- Normal password without keyboard pattern
+- Keyboard pattern strength classification
 
 ---
 
@@ -466,7 +517,11 @@ The system checks for:
 - Increasing character sequences
 - Decreasing character sequences
 
-Step 4: Validate Password Policy
+Step 4: Check Keyboard Pattern
+
+The system checks whether the password contains a predefined keyboard sequence.
+
+Step 5: Validate Password Policy
 
 The system checks:
 
@@ -476,23 +531,23 @@ The system checks:
 - Digit
 - Special character
 
-Step 5: Determine Character Pool
+Step 6: Determine Character Pool
 
 The system identifies the character categories present in the password.
 
-Step 6: Calculate Entropy
+Step 7: Calculate Entropy
 
 The estimated entropy is calculated using:
 
 Entropy = Password Length × log₂(Character Pool)
 
-Step 7: Determine Strength
+Step 8: Determine Strength
 
 The entropy value is compared with the predefined strength thresholds.
 
-If the password is detected as a common password or contains a common pattern, its strength is classified as Very Weak.
+If the password is detected as a common password, contains a common pattern, or contains a keyboard pattern, its strength is classified as Very Weak.
 
-Step 8: Generate Result
+Step 9: Generate Result
 
 The application displays:
 
@@ -532,6 +587,7 @@ The PasswordChecker class combines:
 - Entropy calculation
 - Common password detection
 - Common pattern detection
+- Keyboard pattern detection
 - Password strength classification
 
 This modular design improves:
@@ -573,6 +629,12 @@ The password is scanned to identify repeated or sequential characters.
 
 O(n)
 
+### Keyboard Pattern Detection
+
+The password is checked against a fixed set of keyboard patterns.
+
+For the fixed pattern list used in this project, this is effectively O(n).
+
 ### Overall Time Complexity
 
 O(n)
@@ -611,80 +673,24 @@ The automated tests cover the major components of the application.
 - Non-Common Password
 - Common Password Strength
 
-### Pattern Detection
+### Common Pattern Detection
 
 - Repeated Character Pattern
 - Increasing Character Pattern
 - Decreasing Character Pattern
 - Normal Password Without Pattern
 
+### Keyboard Pattern Detection
+
+- QWERTY Pattern
+- ASDFGH Pattern
+- ZXCVBN Pattern
+- Normal Password Without Keyboard Pattern
+- Keyboard Pattern Strength
+
 Current test result:
 
-17 tests passed
-
----
-
-## Future Enhancements
-
-Possible future improvements include:
-
-- Larger common-password database
-- Dictionary-based password analysis
-- More advanced password pattern detection
-- Detection of keyboard patterns such as qwerty
-- Detection of numeric sequences such as 123456
-- Detection of repeated blocks
-- Detection of dates and years
-- Secure password generation
-- Graphical User Interface
-- Web-based interface
-- Configurable password policies
-- Detailed security reports
-- Privacy-preserving password breach checking
-- Password history analysis
-- Real-time password strength feedback
-- Exporting password audit reports
-
----
-
-## Learning Outcomes
-
-This project demonstrates the following concepts:
-
-- Python programming
-- Object-Oriented Programming
-- Classes and objects
-- Modular programming
-- Password policy validation
-- Password entropy
-- Password strength classification
-- Common password detection
-- Pattern detection
-- Unit testing
-- Pytest
-- Algorithm design
-- Time complexity
-- Space complexity
-- Git
-- GitHub
-- Software project organization
-
----
-
-## Project Applications
-
-This project can be used as an educational example for understanding:
-
-- Password security
-- Secure authentication concepts
-- Password policy validation
-- Password entropy
-- Common password detection
-- Password pattern analysis
-- Python OOP
-- Software testing
-
-It can also serve as a foundation for developing more advanced password auditing tools.
+22 tests passed
 
 ---
 
@@ -718,9 +724,85 @@ Added:
 - Decreasing sequence detection
 - Additional automated tests
 
+### Version 4
+
+Added:
+
+- Keyboard pattern detection
+- QWERTY pattern detection
+- ASDFGH pattern detection
+- ZXCVBN pattern detection
+- Keyboard pattern strength classification
+- Additional automated tests
+
 Current test count:
 
-17 tests
+22 tests
+
+---
+
+## Future Enhancements
+
+Possible future improvements include:
+
+- Larger common-password database
+- Dictionary-based password analysis
+- More advanced password pattern detection
+- Detection of numeric sequences
+- Detection of repeated blocks
+- Detection of dates and years
+- Secure password generation
+- Graphical User Interface
+- Web-based interface
+- Configurable password policies
+- Detailed security reports
+- Privacy-preserving password breach checking
+- Password history analysis
+- Real-time password strength feedback
+- Exporting password audit reports
+
+---
+
+## Learning Outcomes
+
+This project demonstrates the following concepts:
+
+- Python programming
+- Object-Oriented Programming
+- Classes and objects
+- Modular programming
+- Password policy validation
+- Password entropy
+- Password strength classification
+- Common password detection
+- Pattern detection
+- Keyboard pattern detection
+- Unit testing
+- Pytest
+- Algorithm design
+- Time complexity
+- Space complexity
+- Git
+- GitHub
+- Software project organization
+
+---
+
+## Project Applications
+
+This project can be used as an educational example for understanding:
+
+- Password security
+- Secure authentication concepts
+- Password policy validation
+- Password entropy
+- Common password detection
+- Password pattern analysis
+- Keyboard pattern analysis
+- Python OOP
+- Software testing
+
+It can also serve as a foundation for developing more advanced password auditing tools.
 
 ---
 
