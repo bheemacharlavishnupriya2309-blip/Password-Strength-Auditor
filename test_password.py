@@ -79,3 +79,26 @@ def test_weak_password():
 
     assert result["valid"] is False
     assert result["strength"] == "Very Weak"
+def test_common_password():
+    checker = PasswordChecker()
+
+    result = checker.check_password("password")
+
+    assert result["is_common"] is True
+    assert "Password is a commonly used password" in result["errors"]
+
+
+def test_non_common_password():
+    checker = PasswordChecker()
+
+    result = checker.check_password("Xy7!mQ2@")
+
+    assert result["is_common"] is False
+
+
+def test_common_password_is_very_weak():
+    checker = PasswordChecker()
+
+    result = checker.check_password("password")
+
+    assert result["strength"] == "Very Weak"   

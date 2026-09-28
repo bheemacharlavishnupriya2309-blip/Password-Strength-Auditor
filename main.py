@@ -10,6 +10,11 @@ def display_result(result):
     print(f"Entropy       : {result['entropy']:.2f} bits")
     print(f"Strength      : {result['strength']}")
 
+    print(
+        f"Common Password: "
+        f"{'YES' if result['is_common'] else 'NO'}"
+    )
+
     if result["errors"]:
         print("\nPolicy Issues:")
         for error in result["errors"]:
