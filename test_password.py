@@ -253,3 +253,53 @@ def test_invalid_minimum_length():
         assert False
     except ValueError:
         assert True
+from security_report import SecurityReport
+
+
+def test_security_report_valid_password():
+    checker = PasswordChecker()
+    result = checker.check_password("Strong@12345")
+
+    report = SecurityReport().generate(result)
+
+    assert "PASSWORD SECURITY AUDIT REPORT" in report
+    assert "Password Status   : PASS" in report
+    assert "Security Summary:" in report
+
+
+def test_security_report_invalid_password():
+    checker = PasswordChecker()
+    result = checker.check_password("abc")
+
+    report = SecurityReport().generate(result)
+
+    assert "Password Status   : FAIL" in report
+    assert "Policy Issues:" in report
+
+
+def test_security_report_common_password():
+    checker = PasswordChecker()
+    result = checker.check_password("password")
+
+    report = SecurityReport().generate(result)
+
+    assert "Common Password   : YES" in report
+    assert "Password Status   : FAIL" in report
+
+
+def test_security_report_keyboard_pattern():
+    checker = PasswordChecker()
+    result = checker.check_password("qwerty123")
+
+    report = SecurityReport().generate(result)
+
+    assert "Keyboard Pattern  : YES" in report
+
+
+def test_security_report_no_policy_errors():
+    checker = PasswordChecker()
+    result = checker.check_password("Strong@12345")
+
+    report = SecurityReport().generate(result)
+
+    assert "Policy Issues:\nNone" in report

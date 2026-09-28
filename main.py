@@ -1,5 +1,6 @@
 from password_checker import PasswordChecker
 from password_generator import PasswordGenerator
+from security_report import SecurityReport
 
 
 def display_result(result):
@@ -63,6 +64,13 @@ def audit_password():
     result = checker.check_password(password)
 
     display_result(result)
+
+    print("\nSecurity Audit Report:")
+
+    report_generator = SecurityReport()
+    report = report_generator.generate(result)
+
+    print(report)
 
 
 def main():

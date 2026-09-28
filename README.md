@@ -1181,3 +1181,126 @@ Developed as a Python security and software engineering project.
 ## License
 
 This project is intended for educational and learning purposes.
+## Version 7 — Security Audit Reports
+
+Version 7 introduces a dedicated Security Audit Report system that converts password analysis results into a structured security report.
+
+### Security Audit Report Features
+
+The report includes:
+
+- Password policy status
+- Password strength
+- Entropy score
+- Common password detection
+- Common pattern detection
+- Keyboard pattern detection
+- Policy issues
+- Security summary
+
+### Example Report
+
+==================================================
+          PASSWORD SECURITY AUDIT REPORT
+==================================================
+
+Password Status   : PASS
+Strength          : Strong
+Entropy           : 72.45 bits
+Common Password   : NO
+Common Pattern    : NO
+Keyboard Pattern  : NO
+
+Policy Issues:
+None
+
+Security Summary:
+Password satisfies the configured security policy.
+
+==================================================
+
+### SecurityReport Class
+
+The `SecurityReport` class is responsible for generating the audit report from the result produced by `PasswordChecker`.
+
+Example:
+
+    checker = PasswordChecker()
+    result = checker.check_password("Strong@12345")
+
+    report_generator = SecurityReport()
+    report = report_generator.generate(result)
+
+    print(report)
+
+### Version 7 Testing
+
+Version 7 adds automated tests for:
+
+- Valid password reports
+- Invalid password reports
+- Common password reports
+- Keyboard pattern reports
+- Reports without policy errors
+
+Total automated tests: **38**
+
+All tests pass successfully.
+
+## Updated Project Structure
+
+Password_Strength_Auditor/
+│
+├── README.md
+├── main.py
+├── password_checker.py
+├── password_generator.py
+├── policy.py
+├── entropy.py
+├── security_report.py
+├── test_password.py
+├── requirements.txt
+└── .gitignore
+
+## Version History
+
+### Version 1
+- Password policy validation
+- Entropy calculation
+- Strength classification
+- Automated testing
+
+### Version 2
+- Common password detection
+- Common password warnings
+
+### Version 3
+- Common pattern detection
+- Repeated character detection
+- Increasing and decreasing sequences
+
+### Version 4
+- Keyboard pattern detection
+- QWERTY, ASDFGH and ZXCVBN detection
+
+### Version 5
+- Secure password generation
+- Custom password length
+- Character-type selection
+- Password generator validation
+
+### Version 6
+- Configurable password policies
+- Custom minimum length
+- Optional uppercase requirement
+- Optional lowercase requirement
+- Optional digit requirement
+- Optional special-character requirement
+
+### Version 7
+- Security Audit Report system
+- Structured security reports
+- Policy status reporting
+- Security summary
+- Automated report testing
+- Total test coverage increased to 38 tests
