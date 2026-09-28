@@ -2,9 +2,9 @@
 
 ## Project Description
 
-Password Strength Auditor & Policy Checker is a Python-based security application that evaluates the strength of a password using password policy validation, entropy calculation, password strength classification, and common password detection.
+Password Strength Auditor & Policy Checker is a Python-based security application that evaluates password strength using password policy validation, entropy calculation, password strength classification, common password detection, and common pattern detection.
 
-The application checks password requirements such as minimum length, uppercase letters, lowercase letters, digits, and special characters. It also estimates password entropy and detects passwords that are commonly used.
+The application checks password requirements such as minimum length, uppercase letters, lowercase letters, digits, and special characters. It also estimates password entropy and detects passwords that are commonly used or contain simple predictable patterns.
 
 The project is developed using Object-Oriented Programming principles and includes automated testing using Pytest.
 
@@ -20,6 +20,10 @@ The system is designed to:
 - Calculate estimated password entropy.
 - Classify password strength.
 - Detect commonly used passwords.
+- Detect simple predictable password patterns.
+- Detect repeated characters.
+- Detect increasing character sequences.
+- Detect decreasing character sequences.
 - Identify missing password requirements.
 - Provide useful feedback to users.
 - Demonstrate Object-Oriented Programming.
@@ -37,6 +41,9 @@ The system is designed to:
 - Password entropy calculation
 - Password strength classification
 - Common password detection
+- Repeated character pattern detection
+- Increasing character sequence detection
+- Decreasing character sequence detection
 - Detailed password policy error messages
 - Object-Oriented Programming
 - Automated unit testing using Pytest
@@ -73,7 +80,7 @@ Password_Strength_Auditor/
 | File | Purpose |
 |---|---|
 | main.py | Runs the main application |
-| password_checker.py | Combines policy checking, entropy analysis, and common password detection |
+| password_checker.py | Combines policy checking, entropy analysis, common password detection, and pattern detection |
 | policy.py | Checks password policy requirements |
 | entropy.py | Calculates estimated password entropy |
 | test_password.py | Contains automated test cases |
@@ -91,6 +98,8 @@ User enters password
         ↓
 Common Password Check
         ↓
+Common Pattern Check
+        ↓
 Password Policy Check
         ↓
 Entropy Calculation
@@ -103,11 +112,12 @@ The system performs the following operations:
 
 1. Accepts a password from the user.
 2. Checks whether the password is commonly used.
-3. Validates the password against the configured security policy.
-4. Identifies the character types present in the password.
-5. Calculates estimated password entropy.
-6. Classifies the password strength.
-7. Displays the final password audit result.
+3. Checks whether the password contains a predictable pattern.
+4. Validates the password against the configured security policy.
+5. Identifies the character types present in the password.
+6. Calculates estimated password entropy.
+7. Classifies the password strength.
+8. Displays the final password audit result.
 
 ---
 
@@ -151,6 +161,57 @@ The list is intended for educational demonstration and is not a complete databas
 
 ---
 
+## Common Pattern Detection
+
+Version 3 introduces common password pattern detection.
+
+The system detects simple predictable patterns that can make passwords easier to guess.
+
+### Repeated Characters
+
+The system detects passwords where the same character is repeated throughout the password.
+
+Example:
+
+aaaaaa
+
+### Increasing Character Sequence
+
+The system detects characters that continuously increase by one character code.
+
+Example:
+
+abcdef
+
+### Decreasing Character Sequence
+
+The system detects characters that continuously decrease by one character code.
+
+Example:
+
+fedcba
+
+If a common pattern is detected, the system adds:
+
+Password contains a common pattern
+
+The password is also classified as Very Weak.
+
+---
+
+## Pattern Detection Logic
+
+The pattern detector performs the following checks:
+
+1. If the password is shorter than four characters, no pattern is reported.
+2. If all characters are identical, a repeated-character pattern is detected.
+3. The system checks whether every character increases sequentially.
+4. The system checks whether every character decreases sequentially.
+5. If either sequential condition is satisfied, a common pattern is detected.
+6. Otherwise, the password is treated as not containing a detected common pattern.
+
+---
+
 ## Entropy Calculation
 
 Password entropy is estimated using password length and the size of the character pool.
@@ -182,7 +243,7 @@ The application classifies passwords based on estimated entropy.
 | 60–79 bits | Strong |
 | 80+ bits | Very Strong |
 
-A password detected as a common password is classified as Very Weak by the application.
+A password detected as a common password or detected as containing a common pattern is classified as Very Weak by the application.
 
 These thresholds are used for this project's classification and are not a guarantee of real-world password security.
 
@@ -301,6 +362,56 @@ Policy Issues:
 
 ---
 
+## Example of a Common Pattern
+
+Input:
+
+abcdef
+
+Output:
+
+=============================================
+       PASSWORD STRENGTH AUDITOR
+=============================================
+Policy Status : FAIL
+Entropy       : ...
+Strength      : Very Weak
+Common Password: NO
+
+Policy Issues:
+- Password must contain an uppercase letter
+- Password must contain a digit
+- Password must contain a special character
+- Password contains a common pattern
+=============================================
+
+---
+
+## Example of Repeated Characters
+
+Input:
+
+aaaaaa
+
+Output:
+
+=============================================
+       PASSWORD STRENGTH AUDITOR
+=============================================
+Policy Status : FAIL
+Entropy       : ...
+Strength      : Very Weak
+Common Password: NO
+
+Policy Issues:
+- Password must contain an uppercase letter
+- Password must contain a digit
+- Password must contain a special character
+- Password contains a common pattern
+=============================================
+
+---
+
 ## Testing
 
 The project uses Pytest for automated testing.
@@ -309,11 +420,11 @@ Run all tests using:
 
 pytest
 
-The current test suite contains 13 test cases.
+The current test suite contains 17 test cases.
 
 Expected result:
 
-13 passed
+17 passed
 
 The test suite checks:
 
@@ -330,6 +441,10 @@ The test suite checks:
 - Common password detection
 - Non-common password detection
 - Common password strength classification
+- Repeated character pattern detection
+- Increasing pattern detection
+- Decreasing pattern detection
+- Normal password pattern detection
 
 ---
 
@@ -343,7 +458,15 @@ Step 2: Check Common Password
 
 The password is compared against the application's common-password list.
 
-Step 3: Validate Password Policy
+Step 3: Check Common Pattern
+
+The system checks for:
+
+- Repeated characters
+- Increasing character sequences
+- Decreasing character sequences
+
+Step 4: Validate Password Policy
 
 The system checks:
 
@@ -353,23 +476,23 @@ The system checks:
 - Digit
 - Special character
 
-Step 4: Determine Character Pool
+Step 5: Determine Character Pool
 
 The system identifies the character categories present in the password.
 
-Step 5: Calculate Entropy
+Step 6: Calculate Entropy
 
 The estimated entropy is calculated using:
 
 Entropy = Password Length × log₂(Character Pool)
 
-Step 6: Determine Strength
+Step 7: Determine Strength
 
 The entropy value is compared with the predefined strength thresholds.
 
-If the password is detected as a common password, its strength is classified as Very Weak.
+If the password is detected as a common password or contains a common pattern, its strength is classified as Very Weak.
 
-Step 7: Generate Result
+Step 8: Generate Result
 
 The application displays:
 
@@ -408,6 +531,7 @@ The PasswordChecker class combines:
 - Password policy validation
 - Entropy calculation
 - Common password detection
+- Common pattern detection
 - Password strength classification
 
 This modular design improves:
@@ -443,6 +567,12 @@ Average-case lookup:
 
 O(1)
 
+### Common Pattern Detection
+
+The password is scanned to identify repeated or sequential characters.
+
+O(n)
+
 ### Overall Time Complexity
 
 O(n)
@@ -459,7 +589,7 @@ O(1)
 
 The automated tests cover the major components of the application.
 
-Password Policy
+### Password Policy
 
 - Valid Password
 - Short Password
@@ -468,12 +598,12 @@ Password Policy
 - Missing Digit
 - Missing Special Character
 
-Entropy Calculator
+### Entropy Calculator
 
 - Empty Password
 - Entropy Comparison
 
-Password Checker
+### Password Checker
 
 - Valid Password
 - Weak Password
@@ -481,9 +611,16 @@ Password Checker
 - Non-Common Password
 - Common Password Strength
 
+### Pattern Detection
+
+- Repeated Character Pattern
+- Increasing Character Pattern
+- Decreasing Character Pattern
+- Normal Password Without Pattern
+
 Current test result:
 
-13 tests passed
+17 tests passed
 
 ---
 
@@ -493,9 +630,11 @@ Possible future improvements include:
 
 - Larger common-password database
 - Dictionary-based password analysis
-- Detection of repeated characters
-- Detection of common password patterns
-- Detection of sequential characters
+- More advanced password pattern detection
+- Detection of keyboard patterns such as qwerty
+- Detection of numeric sequences such as 123456
+- Detection of repeated blocks
+- Detection of dates and years
 - Secure password generation
 - Graphical User Interface
 - Web-based interface
@@ -520,6 +659,7 @@ This project demonstrates the following concepts:
 - Password entropy
 - Password strength classification
 - Common password detection
+- Pattern detection
 - Unit testing
 - Pytest
 - Algorithm design
@@ -540,10 +680,47 @@ This project can be used as an educational example for understanding:
 - Password policy validation
 - Password entropy
 - Common password detection
+- Password pattern analysis
 - Python OOP
 - Software testing
 
 It can also serve as a foundation for developing more advanced password auditing tools.
+
+---
+
+## Version History
+
+### Version 1
+
+Initial implementation containing:
+
+- Password policy validation
+- Entropy calculation
+- Password strength classification
+- Automated testing
+
+### Version 2
+
+Added:
+
+- Common password detection
+- Common password warnings
+- Common password strength override
+- Additional automated tests
+
+### Version 3
+
+Added:
+
+- Common pattern detection
+- Repeated character detection
+- Increasing sequence detection
+- Decreasing sequence detection
+- Additional automated tests
+
+Current test count:
+
+17 tests
 
 ---
 
